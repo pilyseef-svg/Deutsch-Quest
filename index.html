@@ -138,7 +138,33 @@ const bank=(level)=>{
 };
 const a2=bank("A2"),b1=bank("B1"),b2=bank("B2"),c1=bank("C1");
 
-let mode="institute",pool=[],quiz=[],index=0,score=0,wrong=[],answered=false;\nconst banks={institute,a1,a2,b1,b2,c1};
+const a1=bank("A1");
+const instituteExtra=[];
+const addInstitute=(c,q,o,a,e)=>instituteExtra.push({c,q,o,a,e});
+const seinForms=[["ich","bin"],["du","bist"],["er","ist"],["sie","ist"],["wir","sind"],["ihr","seid"],["Sie","sind"]];
+const habenForms=[["ich","habe"],["du","hast"],["er","hat"],["sie","hat"],["wir","haben"],["ihr","habt"],["Sie","haben"]];
+for(const [p,ans] of seinForms) addInstitute("Grammar",`Das Verb „sein“: ${p} ___ Student.`,[ans,"bin","bist","sind"].filter((x,i,a)=>a.indexOf(x)===i).concat(["seid"]).slice(0,4),0,`Die richtige Form lautet „${ans}“.`);
+for(const [p,ans] of habenForms) addInstitute("Grammar",`Das Verb „haben“: ${p} ___ ein Buch.`,[ans,"habe","hast","haben"].filter((x,i,a)=>a.indexOf(x)===i).concat(["habt"]).slice(0,4),0,`Die richtige Form lautet „${ans}“.`);
+const articleWords=[["Kind","das"],["Mann","der"],["Frau","die"],["Buch","das"],["Bleistift","der"],["Wohnung","die"],["Bruder","der"],["Schwester","die"],["Auto","das"],["Familie","die"],["Student","der"],["Lehrerin","die"],["Haus","das"],["Tasche","die"],["Tisch","der"],["Mädchen","das"],["Mutter","die"],["Vater","der"],["Zimmer","das"],["Lampe","die"]];
+for(const [w,a] of articleWords) addInstitute("Grammar",`Welcher bestimmte Artikel ist richtig? ___ ${w}.`,[a,"der","die","das"].filter((x,i,z)=>z.indexOf(x)===i).concat(["den"]).slice(0,4),0,`Der richtige Artikel ist „${a}“.`);
+const accWords=[["Mann","den"],["Bleistift","den"],["Bruder","den"],["Vater","den"],["Hund","den"],["Tisch","den"],["Buch","das"],["Kind","das"],["Auto","das"],["Frau","die"],["Mutter","die"],["Tasche","die"]];
+for(const [w,a] of accWords) addInstitute("Grammar",`Ich sehe ___ ${w}.`,[a,"der","die","das"].filter((x,i,z)=>z.indexOf(x)===i).concat(["den"]).slice(0,4),0,`Im Akkusativ lautet die Form hier „${a}“.`);
+const neg=["Ich komme heute ___ .","Er wohnt ___ in Berlin.","Wir lernen heute ___ .","Sie ist ___ hier.","Ich verstehe das Wort ___ .","Das ist ___ mein Buch.","Du bist ___ allein.","Er arbeitet heute ___ .","Wir sind ___ müde.","Ich habe ___ Zeit."];
+for(const q of neg) addInstitute("Grammar",q,["nicht","kein","nein","nichts"],0,"„Nicht“ verneint hier die Aussage.");
+const questions=[["Ich heiße Omar.","Wie heißt du?"],["Ich wohne in Kairo.","Wo wohnst du?"],["Ich komme aus Ägypten.","Woher kommst du?"],["Ich bin Student.","Was bist du?"],["Ich studiere Medizin.","Was studierst du?"],["Ich bin 20 Jahre alt.","Wie alt bist du?"],["Das ist mein Bruder.","Wer ist das?"],["Ich lerne Deutsch.","Was lernst du?"],["Ich wohne in Tanta.","Wo wohnst du?"],["Ich heiße Sara.","Wie heißen Sie?"]];
+for(const [ans,q] of questions) addInstitute("Grammar",`Welche Frage passt zur Antwort „${ans}“?`,[q,"Wie spät ist es?","Was kostet das?","Wann beginnt der Film?"],0,"Die Frage passt genau zur gegebenen Antwort.");
+const nums=[["null","0"],["eins","1"],["zwei","2"],["drei","3"],["vier","4"],["fünf","5"],["sechs","6"],["sieben","7"],["acht","8"],["neun","9"],["zehn","10"]];
+for(const [w,n] of nums) addInstitute("Vocabulary",`Welche Zahl bedeutet „${w}“?`,[n,"2","5","10"].filter((x,i,z)=>z.indexOf(x)===i).concat(["7"]).slice(0,4),0,`„${w}“ bedeutet ${n}.`);
+const vowels=["a","e","i","o","u"];
+for(const v of vowels) addInstitute("Vocabulary",`Welcher Buchstabe ist ein Vokal?`,[v,"b","k","t"],0,`„${v}“ ist einer der fünf Vokale.`);
+const imperatives=[["kommen","Kommen Sie!"],["lernen","Lernen Sie!"],["machen","Machen Sie!"],["wohnen","Wohnen Sie!"],["hören","Hören Sie!"],["fragen","Fragen Sie!"],["schreiben","Schreiben Sie!"],["lesen","Lesen Sie!"]];
+for(const [v,ans] of imperatives) addInstitute("Grammar",`Wie lautet der höfliche Imperativ von „${v}“?`,[ans,"Du "+v+"!","Sie "+v+"!","Er "+v+"!"],0,`Die höfliche Imperativform lautet „${ans}“.`);
+const pronouns=[["ich","mich"],["du","dich"],["er","ihn"],["sie","sie"],["wir","uns"],["ihr","euch"],["Sie","Sie"]];
+for(const [p,ans] of pronouns) addInstitute("Grammar",`Welches Akkusativpronomen passt zu „${p}“?`,[ans,"mir","dir","ihm"].filter((x,i,z)=>z.indexOf(x)===i).concat(["uns"]).slice(0,4),0,`Das Akkusativpronomen lautet „${ans}“.`);
+const instituteFull=[...institute,...instituteExtra];
+
+
+let mode="institute",pool=[],quiz=[],index=0,score=0,wrong=[],answered=false;\nconst banks={institute:instituteFull,a1,a2,b1,b2,c1};
 const $=id=>document.getElementById(id);
 function show(id){["home","setup","quiz","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
 function chooseMode(m){mode=m;$("modeTitle").textContent=m.toUpperCase()+" Mode";$("available").textContent="Available questions: "+banks[m].length;show("setup")}
