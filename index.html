@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101225"><title>Deutsch Quest</title>
+<style>
+:root{--bg:#0b1020;--panel:#151b32;--panel2:#1c2542;--line:#303b60;--text:#f4f5ff;--muted:#aeb8d8;--purple:#9b7bff;--blue:#54b9f5;--good:#45d6a0;--bad:#ff7488}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#27204b 0,transparent 34%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+.wrap{max-width:920px;margin:auto;padding:22px 16px 48px}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:24px}.brand{font-weight:900;font-size:22px;letter-spacing:.2px}.brand span{color:var(--purple)}.tag{color:var(--muted);font-size:12px}
+.hero{padding:26px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(135deg,#211b46,#162747);margin-bottom:18px}.eyebrow{color:#c4b5ff;font-size:13px}.hero h1{font-size:clamp(27px,6vw,42px);margin:8px 0}.hero p{color:var(--muted);margin:0;line-height:1.8}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}.mode{cursor:pointer;text-align:right;color:var(--text);transition:.2s}.mode:hover{border-color:var(--purple);transform:translateY(-2px)}.mode h2{margin:8px 0}.mode p{color:var(--muted);line-height:1.7;margin:0}.symbol{font-size:27px}
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}.controls label{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:8px}.controls select{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:10px;border-radius:10px}
+button{border:0;border-radius:12px;padding:12px 17px;background:linear-gradient(100deg,var(--purple),#6d8cff);color:white;font-weight:750;cursor:pointer;font-size:14px}button.secondary{background:var(--panel2);border:1px solid var(--line)}button:disabled{opacity:.45;cursor:not-allowed}
+.hidden{display:none!important}.section-title{display:flex;justify-content:space-between;align-items:center;gap:12px}.muted{color:var(--muted)}.progress{height:8px;background:#293250;border-radius:99px;overflow:hidden;margin:12px 0 18px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--blue));transition:.25s}
+.qbox{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px}.qmeta{color:#c4b5ff;font-size:13px}.question{font-size:clamp(20px,4vw,26px);font-weight:800;direction:ltr;text-align:left;margin:18px 0;line-height:1.5}.answers{display:grid;gap:10px}.answer{width:100%;text-align:left;direction:ltr;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-weight:600}.answer.correct{border-color:var(--good);background:#123b37}.answer.wrong{border-color:var(--bad);background:#452433}.explain{margin-top:14px;padding:14px;border-radius:12px;background:#202b49;line-height:1.7}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.result{text-align:center;padding:26px}.score{font-size:48px;font-weight:900;color:#c4b5ff}.review-item{padding:14px 0;border-bottom:1px solid var(--line);direction:ltr;text-align:left;line-height:1.7}.pill{display:inline-block;border:1px solid var(--line);border-radius:99px;padding:5px 10px;color:var(--muted);font-size:12px}
+@media(max-width:620px){.grid{grid-template-columns:1fr}.hero{padding:21px}.top{align-items:flex-start}}
+</style>
+</head>
+<body><main class="wrap">
+<header class="top"><div class="brand">🇩🇪 Deutsch <span>Quest</span></div><div class="tag">LEARN • PRACTICE • IMPROVE</div></header>
+<section class="hero"><div class="eyebrow">رحلتك في اللغة الألمانية تبدأ هنا</div><h1>Learn German, one question at a time.</h1><p>اختبر نفسك، افهم أخطاءك، وتابع تقدمك خطوة بخطوة. اختر مسار التعلم المناسب لك.</p></section>
+<section id="home">
+<div class="grid">
+<button class="card mode" onclick="chooseMode('institute')"><div class="symbol">🎓</div><h2>Institute Mode</h2><p>تدريبات مبنية على موضوعات كتاب المعهد المرفوع، مع الحفاظ على المصطلحات والأمثلة الأساسية.</p><div class="pill">منهج المعهد</div></button>
+<button class="card mode" onclick="chooseMode('a1')"><div class="symbol">🌱</div><h2>A1 Mode</h2><p>تدريبات تأسيسية عامة للمبتدئين في القواعد والمفردات والقراءة والمحادثة.</p><div class="pill">Beginner level</div></button>
+</div>
+<div class="card" style="margin-top:15px"><b>طريقة التدريب</b><p class="muted">الأسئلة والاختيارات بترتيب عشوائي، وتصحيح فوري مع تفسير مختصر. وفي النهاية هتشوف نتيجتك وتراجع إجاباتك الخاطئة.</p></div>
+</section>
+<section id="setup" class="hidden">
+<div class="section-title"><div><div class="eyebrow">اختيار التدريب</div><h2 id="modeTitle">Institute Mode</h2></div><button class="secondary" onclick="goHome()">رجوع</button></div>
+<div class="card">
+<div class="controls"><label>القسم <select id="category"><option value="all">كل الأقسام</option><option value="Grammar">Grammar</option><option value="Vocabulary">Vocabulary</option><option value="Reading">Reading</option><option value="Conversation">Conversation</option></select></label>
+<label>عدد الأسئلة <select id="count"><option>10</option><option>20</option><option>50</option></select></label></div>
+<p class="muted" id="available"></p><button onclick="startQuiz()">ابدأ الاختبار</button>
+</div></section>
+<section id="quiz" class="hidden">
+<div class="section-title"><div><div class="eyebrow" id="quizMode">Institute Mode</div><h2 id="counter">Question 1</h2></div><span class="pill" id="scoreLive">Score: 0</span></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="qbox"><div class="qmeta" id="qmeta"></div><div class="question" id="question"></div><div class="answers" id="answers"></div><div class="explain hidden" id="explain"></div><div class="actions"><button id="next" onclick="nextQuestion()" disabled>السؤال التالي ←</button><button class="secondary" onclick="goHome()">إنهاء والعودة</button></div></div>
+</section>
+<section id="result" class="hidden"><div class="card result"><div class="eyebrow">نتيجة الاختبار</div><h2>Great effort!</h2><div class="score" id="finalScore">0%</div><p id="resultText" class="muted"></p><div class="actions" style="justify-content:center"><button onclick="reviewWrong()">راجع الأخطاء</button><button class="secondary" onclick="goSetup()">اختبار جديد</button><button class="secondary" onclick="goHome()">الرئيسية</button></div></div><div id="review" class="card hidden" style="margin-top:14px"></div></section>
+</main>
+<script>
+const institute=[
+{c:"Grammar",q:"Ich ___ in Kairo.",o:["wohne","wohnst","wohnt","wohnen"],a:0,e:"مع الضمير Ich نستخدم wohne. هذا من درس Verb-Konjugation / Präsens (ص 5–6).",p:5},
+{c:"Grammar",q:"Wir ___ Studenten.",o:["bin","bist","sind","ist"],a:2,e:"تصريف sein مع Wir هو sind (ص 7).",p:7},
+{c:"Grammar",q:"Er ___ einen Bruder.",o:["haben","hast","hat","habt"],a:2,e:"تصريف haben مع Er هو hat (ص 24).",p:24},
+{c:"Grammar",q:"___ Kind ist brav.",o:["Der","Die","Das","Den"],a:2,e:"في جدول Artikel / Nominativ: Kind محايد ويأخذ das (ص 10).",p:10},
+{c:"Grammar",q:"Da kommt ___ Mann.",o:["ein","eine","einen","einem"],a:0,e:"في Nominativ المذكر نستخدم ein مع الاسم Mann (ص 11).",p:11},
+{c:"Grammar",q:"Ich brauche ___ Bleistift.",o:["ein","einen","eine","der"],a:1,e:"في Akkusativ المذكر تتحول أداة النكرة ein إلى einen (ص 26–27).",p:26},
+{c:"Grammar",q:"ضمير المفعول المقابل لـ ich هو:",o:["mich","mir","mein","du"],a:0,e:"جدول Das Personalpronomen / Akkusativ يوضح: ich → mich (ص 28).",p:28},
+{c:"Grammar",q:"أي سؤال يناسب الإجابة: Ich wohne in Tanta.",o:["Wo wohnst du?","Wie heißt du?","Was trinkst du?","Wer bist du?"],a:0,e:"Wo للسؤال عن المكان، كما في أمثلة Die Frage (ص 14).",p:14},
+{c:"Grammar",q:"اختر أداة النفي المناسبة: Ich verstehe den Text ___.",o:["nicht","nichts","kein","nein"],a:0,e:"nicht تُستخدم لنفي الفعل أو الجملة، كما في أمثلة Verb / Negation (ص 45).",p:45},
+{c:"Grammar",q:"صيغة الأمر من kommen عند مخاطبة Sie هي:",o:["Komm!","Kommt!","Kommen Sie!","Komme!"],a:2,e:"صيغة الأمر الرسمية تستخدم الفعل ثم Sie: Kommen Sie! (ص 47).",p:47},
+{c:"Grammar",q:"اختر التصريف الصحيح: Du ___ eine Wohnung.",o:["habe","hast","hat","haben"],a:1,e:"تصريف haben مع Du هو hast (ص 24).",p:24},
+{c:"Grammar",q:"أي أداة تعريف تُستخدم مع الجمع في Nominativ؟",o:["der","die","das","den"],a:1,e:"جدول Artikel يوضح أن أداة الجمع في Nominativ هي die (ص 10).",p:10},
+{c:"Vocabulary",q:"ما معنى كلمة fünf؟",o:["four","five","six","seven"],a:1,e:"fünf تعني خمسة، ضمن Die Zahlwörter (ص 40).",p:40},
+{c:"Vocabulary",q:"ما معنى كلمة das Buch؟",o:["the book","the table","the house","the car"],a:0,e:"Buch تعني كتاب، وتظهر ضمن أمثلة أدوات التعريف (ص 9–10).",p:9},
+{c:"Vocabulary",q:"أي كلمة تعني 'الأم'؟",o:["der Vater","die Mutter","das Kind","der Bruder"],a:1,e:"die Mutter تعني الأم، ضمن أمثلة جنس الأسماء (ص 12).",p:12},
+{c:"Vocabulary",q:"أي مجموعة تحتوي على الحروف المتحركة (Vokale) المذكورة في الكتاب؟",o:["a, e, i, o, u","b, c, d, f, g","ä, ö, ü, ß","ei, au, eu, ie"],a:0,e:"الكتاب يذكر Vokale أو Selbstlaute: a, e, i, o, u (ص 30).",p:30},
+{c:"Vocabulary",q:"ما معنى null؟",o:["zero","one","ten","twelve"],a:0,e:"null تعني صفر في جدول الأعداد (ص 40).",p:40},
+{c:"Reading",q:"في نص Familie Kurz، كم عدد الأطفال المذكورين؟",o:["One","Two","Three","Four"],a:2,e:"النص يقول: Herr und Frau Kurz und drei Kinder (ص 24).",p:24},
+{c:"Reading",q:"في حوار Sind Sie hier neu?، ماذا تدرس Fräulein Schmitt؟",o:["Medizin","Deutsch","Musik","Mathematik"],a:0,e:"تقول في الحوار: Ich studiere Medizin (ص 18).",p:18},
+{c:"Conversation",q:"ما الرد المناسب على Guten Tag؟",o:["Guten Tag!","Gute Nacht!","Auf Wiedersehen!","Danke!"],a:0,e:"الحوار في الكتاب يعرض Guten Tag! كرد على التحية (ص 18).",p:18},
+{c:"Conversation",q:"كيف تسأل شخصًا عن اسمه رسميًا؟",o:["Wie heißen Sie?","Wo wohnen Sie?","Was machen Sie?","Woher kommen Sie?"],a:0,e:"Wie heißen Sie? تعني ما اسم حضرتك؟ (ص 8 و21).",p:8}
+];
+const a1=[
+{c:"Grammar",q:"Ich ___ Ahmed.",o:["bin","bist","ist","sind"],a:0,e:"مع ich نستخدم bin."},
+{c:"Grammar",q:"Du ___ Deutsch.",o:["lerne","lernst","lernt","lernen"],a:1,e:"تصريف lernen مع du هو lernst."},
+{c:"Grammar",q:"Das ist ___ Apfel.",o:["ein","eine","einen","die"],a:0,e:"Apfel اسم مذكر، وفي Nominativ نستخدم ein."},
+{c:"Grammar",q:"Wir ___ aus Ägypten.",o:["komme","kommt","kommen","kommst"],a:2,e:"مع wir نستخدم kommen."},
+{c:"Grammar",q:"اختَر النفي الصحيح: Ich trinke ___ Kaffee.",o:["nicht","kein","nein","nichts"],a:1,e:"مع الاسم Kaffee نستخدم kein في هذه الجملة."},
+{c:"Vocabulary",q:"ما معنى Hallo؟",o:["Hello","Goodbye","Please","Thanks"],a:0,e:"Hallo تعني مرحبًا."},
+{c:"Vocabulary",q:"ما معنى die Schule؟",o:["school","house","book","city"],a:0,e:"die Schule تعني المدرسة."},
+{c:"Vocabulary",q:"ما معنى Montag؟",o:["Monday","Friday","Sunday","Tuesday"],a:0,e:"Montag هو يوم الاثنين."},
+{c:"Vocabulary",q:"ما معنى Wasser؟",o:["water","milk","bread","tea"],a:0,e:"Wasser تعني ماء."},
+{c:"Vocabulary",q:"ما معنى drei؟",o:["two","three","four","five"],a:1,e:"drei تعني ثلاثة."},
+{c:"Reading",q:"اقرأ: 'Ich heiße Lina. Ich komme aus Ägypten.' Woher kommt Lina?",o:["Deutschland","Ägypten","Italien","Spanien"],a:1,e:"النص يقول إنها تأتي من مصر."},
+{c:"Reading",q:"اقرأ: 'Ali wohnt in Berlin.' Wo wohnt Ali?",o:["Bonn","Berlin","Kairo","Wien"],a:1,e:"الجملة تقول إن علي يسكن في برلين."},
+{c:"Conversation",q:"ما الرد المناسب على Wie geht es dir?",o:["Gut, danke.","Ich heiße Omar.","Ich bin 20.","Auf Wiedersehen."],a:0,e:"Gut, danke تعني بخير، شكرًا."},
+{c:"Conversation",q:"كيف تقول 'من فضلك' بالألمانية؟",o:["Bitte","Danke","Tschüss","Guten Abend"],a:0,e:"Bitte تعني من فضلك أو تفضل."},
+{c:"Conversation",q:"ما الرد المناسب على Danke؟",o:["Bitte!","Guten Morgen!","Nein!","Ich komme."],a:0,e:"Bitte تُستخدم ردًا على Danke."}
+];
+let mode="institute",pool=[],quiz=[],index=0,score=0,wrong=[],answered=false;
+const $=id=>document.getElementById(id);
+function show(id){["home","setup","quiz","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
+function chooseMode(m){mode=m;$("modeTitle").textContent=m==="institute"?"Institute Mode":"A1 Mode";$("available").textContent="الأسئلة المتاحة حاليًا: "+(m==="institute"?institute.length:a1.length);show("setup")}
+function goHome(){show("home")}function goSetup(){chooseMode(mode)}
+function shuffle(arr){let a=[...arr];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function startQuiz(){pool=(mode==="institute"?institute:a1).filter(q=>$("category").value==="all"||q.c===$("category").value);if(!pool.length){$("available").textContent="لا توجد أسئلة في هذا القسم بعد.";return}let n=Math.min(Number($("count").value),pool.length);quiz=shuffle(pool).slice(0,n).map(q=>({...q,o:shuffle(q.o).map((v)=>({v,correct:v===q.o[q.a]}))}));index=0;score=0;wrong=[];show("quiz");render()}
+function render(){answered=false;let q=quiz[index];$("counter").textContent="Question "+(index+1)+" / "+quiz.length;$("quizMode").textContent=mode==="institute"?"Institute Mode":"A1 Mode";$("scoreLive").textContent="Score: "+score;$("bar").style.width=(index/quiz.length*100)+"%";$("qmeta").textContent=q.c+(q.p?" • Book page "+q.p:"");$("question").textContent=q.q;$("explain").classList.add("hidden");$("next").disabled=true;$("next").textContent=index===quiz.length-1?"عرض النتيجة":"السؤال التالي ←";$("answers").innerHTML="";q.o.forEach((opt,i)=>{let b=document.createElement("button");b.className="answer";b.textContent=String.fromCharCode(65+i)+".  "+opt.v;b.onclick=()=>answer(i,b);$("answers").appendChild(b)})}
+function answer(i,btn){if(answered)return;answered=true;let q=quiz[index],opts=[...$("answers").children],ok=q.o[i].correct;if(ok)score++;else wrong.push({q,chosen:q.o[i].v});opts.forEach((b,j)=>{b.disabled=true;if(q.o[j].correct)b.classList.add("correct");else if(j===i)b.classList.add("wrong")});$("scoreLive").textContent="Score: "+score;$("explain").textContent=(ok?"✅ إجابة صحيحة. ":"❌ الإجابة الصحيحة: "+q.o.find(x=>x.correct).v+". ")+q.e;$("explain").classList.remove("hidden");$("next").disabled=false}
+function nextQuestion(){if(!answered)return;index++;if(index<quiz.length)render();else finish()}
+function finish(){$("bar").style.width="100%";let pct=Math.round(score/quiz.length*100);$("finalScore").textContent=pct+"%";$("resultText").textContent="أجبت إجابة صحيحة عن "+score+" من "+quiz.length+" سؤال. "+(pct>=80?"ممتاز! استمر.":pct>=60?"أداء جيد، راجع الأخطاء وحاول مرة أخرى.":"كل محاولة فرصة للتعلم. راجع الإجابات وحاول مجددًا.");$("review").classList.add("hidden");show("result")}
+function reviewWrong(){let box=$("review");box.classList.remove("hidden");box.innerHTML="<h3>مراجعة الإجابات الخاطئة</h3>"+(wrong.length?wrong.map((x,i)=>'<div class="review-item"><b>'+(i+1)+'. '+x.q.q+'</b><br>إجابتك: '+x.chosen+'<br>الصحيح: '+x.q.o.find(o=>o.correct).v+'<br><span class="muted">'+x.q.e+'</span></div>').join(""):"<p>رائع! لم تخطئ في أي سؤال.</p>")}
+</script></body></html>
