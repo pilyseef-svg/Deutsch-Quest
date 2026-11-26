@@ -164,7 +164,8 @@ for(const [p,ans] of pronouns) addInstitute("Grammar",`Welches Akkusativpronomen
 const instituteFull=[...institute,...instituteExtra];
 
 
-let mode="institute",pool=[],quiz=[],index=0,score=0,wrong=[],answered=false;\nconst banks={institute:instituteFull,a1,a2,b1,b2,c1};
+let mode="institute",pool=[],quiz=[],index=0,score=0,wrong=[],answered=false;
+const banks={institute:instituteFull,a1,a2,b1,b2,c1};
 const $=id=>document.getElementById(id);
 function show(id){["home","setup","quiz","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
 function chooseMode(m){mode=m;$("modeTitle").textContent=m.toUpperCase()+" Mode";$("available").textContent="Available questions: "+banks[m].length;show("setup")}
