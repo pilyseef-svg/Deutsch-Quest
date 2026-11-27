@@ -175,4 +175,12 @@ function answer(i,btn){if(answered)return;answered=true;let q=quiz[index],opts=[
 function nextQuestion(){if(!answered)return;index++;if(index<quiz.length)render();else finish()}
 function finish(){$("bar").style.width="100%";let pct=Math.round(score/quiz.length*100);$("finalScore").textContent=pct+"%";$("resultText").textContent= "Correct answers: "+score+ " out of "+quiz.length+" سؤال. "+(pct>=80?"Excellent! Keep going.":pct>=60?"Good work. Review your mistakes and try again.":"Every attempt is a chance to learn. Review and try again.");$("review").classList.add("hidden");show("result")}
 function reviewWrong(){let box=$("review");box.classList.remove("hidden");box.innerHTML="<h3>مراجعة الإجابات الخاطئة</h3>"+(wrong.length?wrong.map((x,i)=>'<div class="review-item"><b>'+(i+1)+'. '+x.q.q+'</b><br>إجابتك: '+x.chosen+'<br>الصحيح: '+x.q.o.find(o=>o.correct).v+'<br><span class="muted">'+x.q.e+'</span></div>').join(""):"<p>رائع! لم تخطئ في أي سؤال.</p>")}
+
+// Make the controls explicitly available to inline handlers in mobile browsers.
+window.chooseMode=chooseMode;
+window.goHome=goHome;
+window.startQuiz=startQuiz;
+window.nextQuestion=nextQuestion;
+window.reviewWrong=reviewWrong;
+window.goSetup=goSetup;
 </script></body></html>
