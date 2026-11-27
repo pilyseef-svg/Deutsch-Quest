@@ -154,7 +154,8 @@ const imperatives=[["kommen","Kommen Sie!"],["lernen","Lernen Sie!"],["machen","
 for(const [v,ans] of imperatives) addInstitute("Grammar",`Wie lautet der höfliche Imperativ von „${v}“?`,[ans,"Du "+v+"!","Sie "+v+"!","Er "+v+"!"],0,`Die höfliche Imperativform lautet „${ans}“.`);
 const pronouns=[["ich","mich"],["du","dich"],["er","ihn"],["sie","sie"],["wir","uns"],["ihr","euch"],["Sie","Sie"]];
 for(const [p,ans] of pronouns) addInstitute("Grammar",`Welches Akkusativpronomen passt zu „${p}“?`,[ans,"mir","dir","ihm"].filter((x,i,z)=>z.indexOf(x)===i).concat(["uns"]).slice(0,4),0,`Das Akkusativpronomen lautet „${ans}“.`);
-const seenInstituteQuestions=new Set();\nconst instituteFull=[...institute,...instituteExtra].filter(q=>{const key=q.q.trim().toLocaleLowerCase("de-DE");if(seenInstituteQuestions.has(key))return false;seenInstituteQuestions.add(key);return true;});
+const seenInstituteQuestions=new Set();
+const instituteFull=[...institute,...instituteExtra].filter(q=>{const key=q.q.trim().toLocaleLowerCase("de-DE");if(seenInstituteQuestions.has(key))return false;seenInstituteQuestions.add(key);return true;});
 
 
 let mode="institute",pool=[],quiz=[],index=0,score=0,wrong=[],answered=false,quizStartedAt=0;
