@@ -18,11 +18,11 @@ button{border:0;border-radius:12px;padding:12px 17px;background:linear-gradient(
 </head>
 <body><main class="wrap">
 <header class="top"><div class="brand">🇩🇪 Deutsch <span>Quest</span></div><div class="tag">LEARN • PRACTICE • IMPROVE</div></header>
-<section class="hero"><div class="eyebrow">رحلتك في اللغة الألمانية تبدأ هنا</div><h1>Learn German, one question at a time.</h1><p>اختبر نفسك، افهم أخطاءك، وتابع تقدمك خطوة بخطوة. اختر مسار التعلم المناسب لك.</p></section>
+<section class="hero"><div class="eyebrow">رحلتك في اللغة الألمانية تبدأ هنا</div><h1>Learn German, one question at a time.</h1><p>اختبر مستواك العام من A1 إلى C1، أو تدرب على محتوى ملف PDF الخاص بالمعهد بشكل منفصل.</p></section>
 <section id="home">
 <div class="grid">
-<button class="card mode" onclick="chooseMode('institute')"><div class="symbol">🎓</div><h2>Institute Mode</h2><p>تدريبات مبنية على موضوعات كتاب المعهد المرفوع، مع الحفاظ على المصطلحات والأمثلة الأساسية.</p><div class="pill">منهج المعهد</div></button>
-<button class="card mode" onclick="chooseMode('a1')"><div class="symbol">🌱</div><h2>A1 Mode</h2><p>تدريبات تأسيسية عامة للمبتدئين في القواعد والمفردات والقراءة والمحادثة.</p><div class="pill">Beginner level</div></button>
+<button class="card mode" onclick="chooseMode('institute')"><div class="symbol">🎓</div><h2>Institute Mode</h2><p>تدريبات على محتوى ملف PDF الخاص بمنهج المعهد فقط، دون أسئلة تحديد المستوى العامة.</p><div class="pill">منهج المعهد</div></button>
+<button class="card mode" onclick="chooseMode('a1')"><div class="symbol">🌱</div><h2>A1 Mode</h2><p>اختبار تحديد مستوى مستقل عن منهج المعهد، وفق مستوى A1 في الألمانية.</p><div class="pill">Beginner level</div></button>
 <button class="card mode" onclick="chooseMode('a2')"><div class="symbol">🌿</div><h2>A2 Mode</h2><p>Alltagskommunikation, Perfekt, Fälle und Nebensätze.</p><div class="pill">Elementary</div></button>
 <button class="card mode" onclick="chooseMode('b1')"><div class="symbol">📘</div><h2>B1 Mode</h2><p>Selbstständige Sprachverwendung, Argumentation und komplexere Texte.</p><div class="pill">Intermediate</div></button>
 <button class="card mode" onclick="chooseMode('b2')"><div class="symbol">🎯</div><h2>B2 Mode</h2><p>Anspruchsvolle Texte, differenzierte Argumentation und präzise Grammatik.</p><div class="pill">Upper intermediate</div></button>
@@ -132,7 +132,7 @@ const imperatives=[["kommen","Kommen Sie!"],["lernen","Lernen Sie!"],["machen","
 for(const [v,ans] of imperatives) addInstitute("Grammar",`Wie lautet der höfliche Imperativ von „${v}“?`,[ans,"Du "+v+"!","Sie "+v+"!","Er "+v+"!"],0,`Die höfliche Imperativform lautet „${ans}“.`);
 const pronouns=[["ich","mich"],["du","dich"],["er","ihn"],["sie","sie"],["wir","uns"],["ihr","euch"],["Sie","Sie"]];
 for(const [p,ans] of pronouns) addInstitute("Grammar",`Welches Akkusativpronomen passt zu „${p}“?`,[ans,"mir","dir","ihm"].filter((x,i,z)=>z.indexOf(x)===i).concat(["uns"]).slice(0,4),0,`Das Akkusativpronomen lautet „${ans}“.`);
-const instituteFull=[...institute,...instituteExtra];
+const instituteFull=institute;
 
 
 let mode="institute",pool=[],quiz=[],index=0,score=0,wrong=[],answered=false;
