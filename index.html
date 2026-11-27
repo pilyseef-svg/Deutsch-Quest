@@ -36,7 +36,7 @@ button{border:0;border-radius:12px;padding:12px 17px;background:linear-gradient(
 <div class="controls"><label>القسم <select id="category"><option value="all">كل الأقسام</option><option value="Grammar">Grammar</option><option value="Vocabulary">Vocabulary</option><option value="Reading">Reading</option><option value="Conversation">Conversation</option></select></label>
 <label>عدد الأسئلة <select id="count"><option>10</option><option>20</option><option>50</option><option>100</option><option value="all">كل الأسئلة المتاحة</option></select></label></div>
 <p class="muted" id="available"></p>
-<label style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;color:var(--muted);line-height:1.7"><input id="resultConsent" type="checkbox" style="margin-top:6px"> أوافق على حفظ نتيجتي (المستوى، الدرجة، عدد الأسئلة، ووقت الإرسال) لمساعدة صاحب الموقع في متابعة إحصائيات الاختبارات. لن يتم حفظ اسمي أو بريدي الإلكتروني أو رقم هاتفي أو عنوان IP، ولن يتم عرض نتيجتي للزوار الآخرين.</label>
+<label style="display:flex;gap:10px;align-items:flex-start;margin:14px 0;color:var(--muted);line-height:1.7"><input id="resultConsent" type="checkbox" style="margin-top:6px"> أوافق على حفظ نتيجة اختباري فقط.</label>
 <button onclick="startQuiz()">ابدأ الاختبار</button>
 </div></section>
 <section id="quiz" class="hidden">
@@ -165,15 +165,17 @@ function show(id){["home","setup","quiz","result"].forEach(x=>$(x).classList.tog
 function chooseMode(m){mode=m;$("modeTitle").textContent=m.toUpperCase()+" Mode";$("available").textContent="Available questions: "+banks[m].length;show("setup")}
 function goHome(){show("home")}function goSetup(){chooseMode(mode)}
 function shuffle(arr){let a=[...arr];for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-function startQuiz(){if(!$("resultConsent").checked){alert("من فضلك وافق على حفظ النتيجة أو لا تبدأ الاختبار.");return}quizStartedAt=Date.now();pool=banks[mode].filter(q=>$("category").value==="all"||q.c===$("category").value);if(!pool.length){$("available").textContent="No questions are available in this section yet.";return}let n=$("count").value==="all"?pool.length:Math.min(Number($("count").value),pool.length);quiz=shuffle(pool).slice(0,n).map(q=>({...q,o:shuffle(q.o.map((v,i)=>({v,correct:i===q.a})))}));index=0;score=0;wrong=[];show("quiz");render()}
+function startQuiz(){quizStartedAt=Date.now();pool=banks[mode].filter(q=>$("category").value==="all"||q.c===$("category").value);if(!pool.length){$("available").textContent="No questions are available in this section yet.";return}let n=$("count").value==="all"?pool.length:Math.min(Number($("count").value),pool.length);quiz=shuffle(pool).slice(0,n).map(q=>({...q,o:shuffle(q.o.map((v,i)=>({v,correct:i===q.a})))}));index=0;score=0;wrong=[];show("quiz");render()}
 function render(){answered=false;let q=quiz[index];$("counter").textContent="Question "+(index+1)+" / "+quiz.length;$("quizMode").textContent=mode.toUpperCase()+" Mode";$("scoreLive").textContent="Score: "+score;$("bar").style.width=(index/quiz.length*100)+"%";$("qmeta").textContent=q.c+(q.p?" • Book page "+q.p:"");$("question").textContent=q.q;$("explain").classList.add("hidden");$("next").disabled=true;$("next").textContent=index===quiz.length-1?"Show results":"Next question →";$("answers").innerHTML="";q.o.forEach((opt,i)=>{let b=document.createElement("button");b.className="answer";b.textContent=String.fromCharCode(65+i)+".  "+opt.v;b.onclick=()=>answer(i,b);$("answers").appendChild(b)})}
 function answer(i,btn){if(answered)return;answered=true;let q=quiz[index],opts=[...$("answers").children],ok=q.o[i].correct;if(ok)score++;else wrong.push({q,chosen:q.o[i].v});opts.forEach((b,j)=>{b.disabled=true;if(q.o[j].correct)b.classList.add("correct");else if(j===i)b.classList.add("wrong")});$("scoreLive").textContent="Score: "+score;$("explain").textContent=(ok?"✅ إجابة صحيحة. ":"❌ الإجابة الصحيحة: "+q.o.find(x=>x.correct).v+". ")+q.e;$("explain").classList.remove("hidden");$("next").disabled=false}
 function nextQuestion(){if(!answered)return;index++;if(index<quiz.length)render();else finish()}
 async function finish(){$("bar").style.width="100%";let pct=Math.round(score/quiz.length*100);$("finalScore").textContent=pct+"%";$("resultText").textContent= "Correct answers: "+score+ " out of "+quiz.length+" سؤال. "+(pct>=80?"Excellent! Keep going.":pct>=60?"Good work. Review your mistakes and try again.":"Every attempt is a chance to learn. Review and try again.");$("review").classList.add("hidden");show("result");
+if($("resultConsent").checked){
 const payload={test_mode:mode==="institute"?"institute":"placement",level:mode==="institute"?null:mode.toUpperCase(),score,total_questions:quiz.length,duration_seconds:Math.max(0,Math.round((Date.now()-quizStartedAt)/1000)),consented:true};
 const {error}=await supabaseClient.from("test_attempts").insert(payload);
 if(error){$("resultText").textContent+=" (تعذر حفظ النتيجة في سجل الموقع؛ نتيجتك ظاهرة لك فقط.)";console.error("Result save failed:",error)}
 else $("resultText").textContent+=" تم حفظ النتيجة في سجل الموقع.";
+}else $("resultText").textContent+=" لم يتم حفظ نتيجتك في سجل الموقع.";
 }
 function reviewWrong(){let box=$("review");box.classList.remove("hidden");box.innerHTML="<h3>مراجعة الإجابات الخاطئة</h3>"+(wrong.length?wrong.map((x,i)=>'<div class="review-item"><b>'+(i+1)+'. '+x.q.q+'</b><br>إجابتك: '+x.chosen+'<br>الصحيح: '+x.q.o.find(o=>o.correct).v+'<br><span class="muted">'+x.q.e+'</span></div>').join(""):"<p>رائع! لم تخطئ في أي سؤال.</p>")}
 
