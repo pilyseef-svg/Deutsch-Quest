@@ -10,7 +10,7 @@
 </head>
 <body><main class="wrap">
 <header class="top"><div class="brand">Deutsch <span>Quest</span> <small class="muted">/ Admin</small></div><a href="./">العودة للموقع</a></header>
-<section id="login" class="card login"><h1>لوحة إدارة Deutsch Quest</h1><p class="muted notice">الدخول مخصص لحساب الإدارة المصرّح به فقط.</p><button class="btn" id="loginBtn">الدخول باستخدام Google</button><p id="loginMsg" class="muted notice"></p></section>
+<section id="login" class="card login"><h1>لوحة إدارة Deutsch Quest</h1><p class="muted notice">سنرسل رابط دخول آمن إلى بريد الإدارة المسجّل فقط.</p><p><input id="adminEmail" type="email" value="pilyseef@gmail.com" readonly style="width:100%;padding:14px;border-radius:10px;border:1px solid var(--line);background:#0b1020;color:var(--text);font-size:16px;text-align:center"></p><button class="btn" id="loginBtn">إرسال رابط الدخول إلى بريدي</button><p id="loginMsg" class="muted notice"></p></section>
 <section id="dashboard" class="hidden">
 <div class="actions"><div><h1>إحصائيات الاختبارات</h1><p class="muted" id="who"></p></div><div class="actions"><button class="btn secondary" id="refreshBtn">تحديث البيانات</button><button class="btn secondary" id="logoutBtn">تسجيل الخروج</button></div></div>
 <div class="stats"><div class="stat"><small>إجمالي المحاولات المسجلة</small><strong id="total">0</strong></div><div class="stat"><small>متوسط النتيجة</small><strong id="average">—</strong></div><div class="stat"><small>اختبارات تحديد المستوى</small><strong id="placement">0</strong></div><div class="stat"><small>اختبارات المنهج</small><strong id="institute">0</strong></div></div>
@@ -44,9 +44,11 @@ async function checkSession(){
  showDashboard(email);await loadResults();
 }
 $("loginBtn").onclick=async()=>{
- $("loginMsg").textContent="جارٍ تحويلك إلى Google…";
- const {error}=await client.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname}});
- if(error)$("loginMsg").textContent="تعذر بدء تسجيل الدخول: "+error.message;
+ $("loginBtn").disabled=true;
+ $("loginMsg").textContent="جارٍ إرسال رابط الدخول إلى بريد الإدارة…";
+ const {error}=await client.auth.signInWithOtp({email:ADMIN_EMAIL,options:{emailRedirectTo:location.origin+location.pathname}});
+ $("loginBtn").disabled=false;
+ $("loginMsg").textContent=error?"تعذر إرسال الرابط: "+error.message:"تم إرسال رابط دخول مؤقت. افتح Gmail واضغط الرابط الموجود في الرسالة، ثم ارجع إلى لوحة الإدارة.";
 };
 $("refreshBtn").onclick=loadResults;
 $("logoutBtn").onclick=async()=>{await client.auth.signOut();showLogin("تم تسجيل الخروج.");};
