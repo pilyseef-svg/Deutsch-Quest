@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101225"><title>Deutsch Quest — Admin</title>
+<style>
+:root{--bg:#0b1020;--panel:#151b32;--line:#303b60;--text:#f4f5ff;--muted:#aeb8d8;--purple:#9b7bff;--blue:#54b9f5;--good:#45d6a0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#27204b 0,transparent 34%),var(--bg);color:var(--text);font-family:system-ui,sans-serif;min-height:100vh}.wrap{max-width:1100px;margin:auto;padding:24px 16px 50px}.top,.actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.brand{font-size:22px;font-weight:900}.brand span{color:var(--purple)}.muted{color:var(--muted)}.card,.stat{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}.login{max-width:520px;margin:70px auto;text-align:center}.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:18px 0}.stat small{color:var(--muted)}.stat strong{display:block;font-size:28px;margin-top:8px}.btn{border:0;border-radius:12px;padding:12px 18px;background:linear-gradient(120deg,var(--purple),var(--blue));color:#101225;font-weight:800;cursor:pointer}.secondary{background:#242d4c;color:var(--text)}table{width:100%;border-collapse:collapse;min-width:650px}th,td{padding:12px 10px;text-align:right;border-bottom:1px solid var(--line);font-size:14px}th{color:#c4b5ff} .table-wrap{overflow:auto}.hidden{display:none!important}.notice{line-height:1.8;font-size:14px}.error{color:#ff9aaa}.ok{color:var(--good)}a{color:#c4b5ff}
+</style>
+</head>
+<body><main class="wrap">
+<header class="top"><div class="brand">Deutsch <span>Quest</span> <small class="muted">/ Admin</small></div><a href="./">العودة للموقع</a></header>
+<section id="login" class="card login"><h1>لوحة إدارة Deutsch Quest</h1><p class="muted notice">الدخول مخصص لحساب الإدارة المصرّح به فقط.</p><button class="btn" id="loginBtn">الدخول باستخدام Google</button><p id="loginMsg" class="muted notice"></p></section>
+<section id="dashboard" class="hidden">
+<div class="actions"><div><h1>إحصائيات الاختبارات</h1><p class="muted" id="who"></p></div><div class="actions"><button class="btn secondary" id="refreshBtn">تحديث البيانات</button><button class="btn secondary" id="logoutBtn">تسجيل الخروج</button></div></div>
+<div class="stats"><div class="stat"><small>إجمالي المحاولات المسجلة</small><strong id="total">0</strong></div><div class="stat"><small>متوسط النتيجة</small><strong id="average">—</strong></div><div class="stat"><small>اختبارات تحديد المستوى</small><strong id="placement">0</strong></div><div class="stat"><small>اختبارات المنهج</small><strong id="institute">0</strong></div></div>
+<div class="card"><h2>أحدث النتائج</h2><p class="muted notice">تظهر هنا النتائج التي وافق أصحابها على حفظها. لا تُعرض هذه البيانات للزوار.</p><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>نوع الاختبار</th><th>المستوى</th><th>النتيجة</th><th>المدة</th></tr></thead><tbody id="rows"><tr><td colspan="5">جارٍ التحميل…</td></tr></tbody></table></div><p class="muted notice" id="status"></p></div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.1/dist/umd/supabase.min.js"></script>
+<script>
+const client=window.supabase.createClient("https://ioieecionqycnzvripvz.supabase.co","sb_publishable_lXovCq1dYQtx238CwyqC8A_Y8SbQfpx");
+const ADMIN_EMAIL="pilyseef@gmail.com";
+const $=id=>document.getElementById(id);
+function showLogin(msg=""){ $("login").classList.remove("hidden");$("dashboard").classList.add("hidden");$("loginMsg").textContent=msg; }
+function showDashboard(email){$("login").classList.add("hidden");$("dashboard").classList.remove("hidden");$("who").textContent="تم تسجيل الدخول: "+email;}
+function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+async function loadResults(){
+ $("status").textContent="جارٍ تحميل النتائج…";
+ const {data,error}=await client.from("test_attempts").select("test_mode,level,score,total_questions,duration_seconds,submitted_at").order("submitted_at",{ascending:false}).limit(1000);
+ if(error){$("status").textContent="تعذر تحميل النتائج: "+error.message;return;}
+ const all=data||[];const avg=all.length?all.reduce((n,r)=>n+(r.score/r.total_questions*100),0)/all.length:0;
+ $("total").textContent=all.length;$("average").textContent=all.length?avg.toFixed(1)+"%":"—";
+ $("placement").textContent=all.filter(r=>r.test_mode==="placement").length;
+ $("institute").textContent=all.filter(r=>r.test_mode==="institute").length;
+ $("rows").innerHTML=all.length?all.map(r=>'<tr><td>'+escapeHtml(new Date(r.submitted_at).toLocaleString("ar-EG"))+'</td><td>'+ (r.test_mode==="placement"?"تحديد المستوى":"المنهج")+'</td><td>'+escapeHtml(r.level||"—")+'</td><td>'+r.score+' / '+r.total_questions+' ('+Math.round(r.score/r.total_questions*100)+'%)</td><td>'+ (r.duration_seconds==null?"—":Math.floor(r.duration_seconds/60)+" د "+r.duration_seconds%60+" ث")+'</td></tr>').join(""):'<tr><td colspan="5">لا توجد نتائج مسجلة حتى الآن.</td></tr>';
+ $("status").textContent="يعرض آخر "+all.length+" محاولة.";
+}
+async function checkSession(){
+ const {data:{session}}=await client.auth.getSession();
+ if(!session){showLogin();return;}
+ const email=(session.user.email||"").toLowerCase();
+ if(email!==ADMIN_EMAIL){await client.auth.signOut();showLogin("هذا الحساب غير مصرح له بالدخول إلى لوحة الإدارة.");return;}
+ showDashboard(email);await loadResults();
+}
+$("loginBtn").onclick=async()=>{
+ $("loginMsg").textContent="جارٍ تحويلك إلى Google…";
+ const {error}=await client.auth.signInWithOAuth({provider:"google",options:{redirectTo:location.origin+location.pathname}});
+ if(error)$("loginMsg").textContent="تعذر بدء تسجيل الدخول: "+error.message;
+};
+$("refreshBtn").onclick=loadResults;
+$("logoutBtn").onclick=async()=>{await client.auth.signOut();showLogin("تم تسجيل الخروج.");};
+client.auth.onAuthStateChange(()=>{setTimeout(checkSession,0);});
+checkSession();
+</script></body></html>
